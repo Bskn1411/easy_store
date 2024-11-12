@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dark 😈</title>
+    <link rel="stylesheet" href="{{ url_for('static',filename='key.css') }}" >
+  
+</head>
+<body>
+    <center>
+        <div class="top">
+          <a href="https://www.linkedin.com/posts/alaparthi-yaswanth-kiran-65aa53272_introducing-image-query-bot-hey-everyone-activity-7220117312924790784-SFLA" target="_blank"><img id="log" src="{{ url_for('static',filename='images/pic1.jpg')}}" ></a>
+
+          <span class="span1" ></span>
+        </div>
+        <div class="key">
+        <h3>Enter Unique Key</h3>
+        <form action="./check_shit" method="post">
+            <div class="in-key">
+              <input type="text" name="key" id="key" placeholder="Enter Unique Key" autocomplete="off" minlength="4" required><br>
+            </div>
+            <button type="submit" id="but" >INSERT</button>
+        </form>
+    </div>
+
+    <div class='final'>
+      <h4>Developed By <span style="color:aqua;">Yaswanth<span> </h4>
+    </div>
+    </center>
+    <script src="{{ url_for('static',filename='script0.js')}}">
+    </script>
+
+
+</body>
+</html>
