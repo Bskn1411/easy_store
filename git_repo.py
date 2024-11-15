@@ -14,7 +14,7 @@ commit_message = 'Add file via Flask'
 print(f"my key:{access_token}")
 
 def upload_to_github(file_content, file_name):
-    base_url = f'https://api.github.com/repos/Bskn1411/files/hell/contents/'
+    base_url = f'https://api.github.com/repos/Bskn1411/files/hell/'
     headers = {'Authorization': f'token {access_token}'}
     file_name = file_name.replace(" ", "")
     # Check if the file already exists
@@ -70,7 +70,7 @@ def upload_to_github(file_content, file_name):
     return True,file_name
 
 def delete_from_github(file_name):
-     base_url = f'https://api.github.com/repos/Bskn1411/files/hell/contents/' 
+     base_url = f'https://api.github.com/repos/Bskn1411/files/hell/' 
     #base_url = f'https://api.github.com/repos/{username}/{repository}/contents/'
     headers = {'Authorization': f'token {access_token}'}
     file_name = file_name.replace(" ", "")
