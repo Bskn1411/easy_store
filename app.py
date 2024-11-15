@@ -86,7 +86,7 @@ def download_file():
 @app.route('/view', methods=['GET', 'POST'])
 def view():
     file_name = request.form["file_name"]
-    file_url = f"https://raw.githubusercontent.com/yash5800/ND_store/master/{file_name}"
+    file_url = f"https://raw.githubusercontent.com/Bskn1411/files/hell/{file_name}"
     
     response = requests.get(file_url)
 
