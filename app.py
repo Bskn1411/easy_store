@@ -66,7 +66,7 @@ def upload_file():
 def download_file():
     file_name = request.form["file_name"]
     print("entered to download file:", file_name)
-    file_url = f"https://raw.githubusercontent.com/yash5800/ND_store/master/{file_name}"
+    file_url = f"https://raw.githubusercontent.com/Bskn1411/files/{file_name}"
     try:
         response = requests.get(file_url)
         response.raise_for_status()
