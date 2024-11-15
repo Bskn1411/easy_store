@@ -66,7 +66,7 @@ def upload_file():
 def download_file():
     file_name = request.form["file_name"]
     print("entered to download file:", file_name)
-    file_url = f"https://raw.githubusercontent.com/Bskn1411/files/hell/{file_name}"
+    file_url = f"https://raw.githubusercontent.com/Bskn1411/files/contents/hell/{file_name}"
     try:
         response = requests.get(file_url)
         response.raise_for_status()
@@ -86,7 +86,7 @@ def download_file():
 @app.route('/view', methods=['GET', 'POST'])
 def view():
     file_name = request.form["file_name"]
-    file_url = f"https://raw.githubusercontent.com/Bskn1411/files/hell/{file_name}"
+    file_url = f"https://raw.githubusercontent.com/Bskn1411/files/contents/hell/{file_name}"
     
     response = requests.get(file_url)
 
