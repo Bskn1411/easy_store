@@ -4,14 +4,82 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>PDF Viewer</title>
-  <link rel="stylesheet" href="{{ url_for('static',filename='style_view.css') }}" >
+  <link rel="stylesheet" href="{{ url_for('static', filename='style_view.css') }}">
 
+  <style>
+    /* Ensuring iframe is properly displayed */
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+    }
+    #print-btn {
+      position: fixed;
+      top: 10px;
+      left: 10px;
+      padding: 10px 15px;
+      background-color: #03a9f4;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      z-index: 1000;
+    }
+    #print-btn:hover {
+      background-color: #0288d1;
+    }
+    #pdf-container {
+      display: block;
+      width: 100%;
+      height: 100vh;
+      border: none;
+    }
+  </style>
 </head>
 <body>
   <!-- Print Button -->
   <button id="print-btn" onclick="printPDF()">Print PDF</button>
 
   <!-- PDF Viewer in iframe -->
+  <iframe 
+    id="pdf-container" 
+    src="{{ url_for('display_pdf', pdf_path=pdf_path) }}" 
+    frameborder="0">
+  </iframe>
+
+  <script>
+    function printPDF() {
+      var iframe = document.getElementById('pdf-container');
+      
+      try {
+        iframe.contentWindow.focus(); // Focus the iframe
+        iframe.contentWindow.print(); // Trigger print for the iframe content
+      } catch (err) {
+        console.error("Printing error:", err);
+        alert("Unable to print. Ensure the PDF is loaded properly.");
+      }
+    }
+  </script>
+</body>
+</html>
+
+
+
+
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PDF Viewer</title>
+  <link rel="stylesheet" href="{{ url_for('static',filename='style_view.css') }}" >
+
+</head>
+<body>
+  Print Button 
+  <button id="print-btn" onclick="printPDF()">Print PDF</button>
+
+   PDF Viewer in iframe 
   <iframe id="pdf-container" src="{{ url_for('display_pdf', pdf_path=pdf_path) }}" width="100%" height="100%" frameborder="0"></iframe>
 
   <script>
@@ -23,3 +91,4 @@
   </script>
 </body>
 </html>
+ -->
