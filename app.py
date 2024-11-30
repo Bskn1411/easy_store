@@ -115,7 +115,8 @@ def download_file():
 #     except requests.RequestException as e:
 #         print(f"Error fetching file: {e}")
 #         return render_template('index.html', status='Unable to Download', user=session['username'], data=retrive(session['username']))
-    
+
+
 @app.route('/view', methods=['GET', 'POST'])
 def view():
     file_name = request.form["file_name"]
@@ -124,17 +125,34 @@ def view():
     response = requests.get(file_url)
 
     if response.status_code == 200:
-        # Save the PDF temporarily
-        temp_pdf_path = 'temp_pdf.pdf'
-        with open(temp_pdf_path, 'wb') as f:
-            f.write(response.content)
-        return render_template('view_pdf.html', pdf_path=temp_pdf_path)
-    else:
-        return "Failed to retrieve the PDF."
+        mime_type, _ = mimetypes.guess_type(file_name)
+        if mime_type is None:
+            mime_type = 'application/pdf'
 
-@app.route('/display/<path:pdf_path>')
-def display_pdf(pdf_path):
-    return send_file(pdf_path, as_attachment=False)
+        # Return the PDF content directly
+        return Response(response.content, mimetype=mime_type)
+    else:
+        print(f"Failed to retrieve the PDF. Status code: {response.status_code}")
+        return render_template('index.html', status='Failed to retrieve PDF', user=session['username'], data=retrive(session['username']))
+# @app.route('/view', methods=['GET', 'POST'])
+# def view():
+#     file_name = request.form["file_name"]
+#     file_url = f"https://raw.githubusercontent.com/Bskn1411/files/main/hell/{file_name}"
+    
+#     response = requests.get(file_url)
+
+#     if response.status_code == 200:
+#         # Save the PDF temporarily
+#         temp_pdf_path = 'temp_pdf.pdf'
+#         with open(temp_pdf_path, 'wb') as f:
+#             f.write(response.content)
+#         return render_template('view_pdf.html', pdf_path=temp_pdf_path)
+#     else:
+#         return "Failed to retrieve the PDF."
+
+# @app.route('/display/<path:pdf_path>')
+# def display_pdf(pdf_path):
+#     return send_file(pdf_path, as_attachment=False)
 
 
 @app.route('/fuck_off', methods=['POST'])
