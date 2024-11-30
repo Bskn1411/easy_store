@@ -62,27 +62,59 @@ def upload_file():
         else:
             return render_template('index.html', status='Not uploaded/File Name Already exists', user=session['username'], data=retrive(session['username']))
 
-@app.route('/download', methods=['GET', 'POST'])
+
+@app.route('/download', methods=['POST'])
 def download_file():
+    if 'username' not in session:
+        return render_template('key.html', status='Session expired. Please log in again.')
+
     file_name = request.form["file_name"]
-    print("entered to download file:", file_name)
+    print("Attempting to download file:", file_name)
+    
+    # Ensure the URL is correct
     file_url = f"https://raw.githubusercontent.com/Bskn1411/files/main/hell/{file_name}"
-    # file_url = f"https://raw.githubusercontent.com/Bskn1411/files/contents/hell/{file_name}"
+
     try:
         response = requests.get(file_url)
-        response.raise_for_status()
-            
-        filename = os.path.basename(file_url)
+        response.raise_for_status()  # Raise an exception for HTTP errors
+
+        filename = os.path.basename(file_name)
         mime_type, _ = mimetypes.guess_type(filename)
-        if mime_type is None:
-            mime_type = 'application/octet-stream'
-            
+        mime_type = mime_type or 'application/octet-stream'
+
         file_content = BytesIO(response.content)
         return send_file(file_content, mimetype=mime_type, as_attachment=True, download_name=filename)
-        
+
     except requests.RequestException as e:
         print(f"Error fetching file: {e}")
-        return render_template('index.html', status='Unable to Download', user=session['username'], data=retrive(session['username']))
+        return render_template(
+            'index.html',
+            status='Unable to Download. Ensure the file exists in the repository.',
+            user=session['username'],
+            data=retrive(session['username'])
+        )
+
+# @app.route('/download', methods=['GET', 'POST'])
+# def download_file():
+#     file_name = request.form["file_name"]
+#     print("entered to download file:", file_name)
+#     file_url = f"https://raw.githubusercontent.com/Bskn1411/files/main/hell/{file_name}"
+#     # file_url = f"https://raw.githubusercontent.com/Bskn1411/files/contents/hell/{file_name}"
+#     try:
+#         response = requests.get(file_url)
+#         response.raise_for_status()
+            
+#         filename = os.path.basename(file_url)
+#         mime_type, _ = mimetypes.guess_type(filename)
+#         if mime_type is None:
+#             mime_type = 'application/octet-stream'
+            
+#         file_content = BytesIO(response.content)
+#         return send_file(file_content, mimetype=mime_type, as_attachment=True, download_name=filename)
+        
+#     except requests.RequestException as e:
+#         print(f"Error fetching file: {e}")
+#         return render_template('index.html', status='Unable to Download', user=session['username'], data=retrive(session['username']))
     
 @app.route('/view', methods=['GET', 'POST'])
 def view():
@@ -104,19 +136,57 @@ def view():
 def display_pdf(pdf_path):
     return send_file(pdf_path, as_attachment=False)
 
-@app.route('/fuck_off', methods=['GET', 'POST'])
-def fuck_off():
+
+@app.route('/fuck_off', methods=['POST'])
+def delete_file_route():
+    if 'username' not in session:
+        return render_template('key.html', status='Session expired. Please log in again.')
+
     file_name = request.form["file_name"]
-    print("Deleting file" + file_name)
-    result = delete_file(session['username'], file_name)
-    if result:
-        
-        result = delete_from_github(file_name)
-        
-        if result:
-            return render_template('index.html', status='Removed', user=session['username'], data=retrive(session['username']))
+    print("Attempting to delete file:", file_name)
     
-    return render_template('index.html', status='Unable to Remove', user=session['username'], data=retrive(session['username']))
+    # First delete from your SQL database
+    db_result = delete_file(session['username'], file_name)
+    
+    # Then delete from GitHub
+    if db_result:
+        github_result = delete_from_github(f"hell/{file_name}")
+        
+        if github_result:
+            return render_template(
+                'index.html',
+                status=f'File "{file_name}" successfully removed.',
+                user=session['username'],
+                data=retrive(session['username'])
+            )
+        else:
+            return render_template(
+                'index.html',
+                status=f'Error: File "{file_name}" removed locally but failed to delete from GitHub.',
+                user=session['username'],
+                data=retrive(session['username'])
+            )
+
+    return render_template(
+        'index.html',
+        status=f'Error: Unable to remove file "{file_name}".',
+        user=session['username'],
+        data=retrive(session['username'])
+    )
+
+# @app.route('/fuck_off', methods=['GET', 'POST'])
+# def fuck_off():
+#     file_name = request.form["file_name"]
+#     print("Deleting file" + file_name)
+#     result = delete_file(session['username'], file_name)
+#     if result:
+        
+#         result = delete_from_github(file_name)
+        
+#         if result:
+#             return render_template('index.html', status='Removed', user=session['username'], data=retrive(session['username']))
+    
+#     return render_template('index.html', status='Unable to Remove', user=session['username'], data=retrive(session['username']))
 
 
 if __name__ == '__main__':
